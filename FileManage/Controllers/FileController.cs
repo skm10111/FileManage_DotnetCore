@@ -1,5 +1,6 @@
 ﻿using Aspose.Words;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using FileManage.Interface;
@@ -27,6 +28,18 @@ namespace FileManage.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UploadFile(IFormFile file, CancellationToken cancellationtoken)
         {
+
+            //var supportedTypes = new[] { "txt", "doc", "docx", "pdf", "xls", "xlsx", "jpg", "png" };
+            //int filesize = 1000;
+            //int numberMB = 15;
+            //var fileExt = System.IO.Path.GetExtension(file.FileName).Substring(1);
+            //if (!supportedTypes.Contains(fileExt))
+            //{
+            //    return BadRequest("File Extension Is InValid - Only Upload WORD/PDF/EXCEL/TXT File");
+            //}
+            //else if (file.Length > (filesize * 1024 * numberMB))
+            //{                
+            //    return BadRequest("File size Should Be UpTo " + numberMB + "MB");}       
             var result = await WriteFile(file, null);
             return Ok(result);
         }
@@ -39,7 +52,7 @@ namespace FileManage.Controllers
             {
                 filePathName = "Upload\\Temp\\PDF";
             }
-            else if(type == "IMAGE")
+            else if (type == "IMAGE")
             {
                 filePathName = "Upload\\Temp\\IMAGE";
             }
@@ -103,7 +116,7 @@ namespace FileManage.Controllers
                 {
                     formFile.CopyTo(ms);
                     var fileBytes = ms.ToArray();
-                    base64 = Convert.ToBase64String(fileBytes);                  
+                    base64 = Convert.ToBase64String(fileBytes);
                 }
             }
             byte[] bytes = Convert.FromBase64String(base64);
@@ -123,7 +136,7 @@ namespace FileManage.Controllers
         new User { Id = 2, Username = "MaeveMillay" },
         new User { Id = 3, Username = "BernardLowe" },
         new User { Id = 4, Username = "ManInBlack" }
-    };      
+    };
 
         [HttpGet("ExelSheet")]
         public async Task<IActionResult> Sheet()
@@ -174,8 +187,8 @@ namespace FileManage.Controllers
             var doc = new Document(pdfFilepath);
             string[] strings = formFile.FileName.Split('.');
             string docFilename = $"{formFile.FileName.Replace($".{strings.Last()}", "")}.docx";
-            doc.Save(Path.Combine(Directory.GetCurrentDirectory(), $"Upload\\Temp\\WORD\\{docFilename}"));  
-            
+            doc.Save(Path.Combine(Directory.GetCurrentDirectory(), $"Upload\\Temp\\WORD\\{docFilename}"));
+
             string filepath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Temp\\WORD", docFilename);
             FileExtensionContentTypeProvider provider = new FileExtensionContentTypeProvider();
             if (!provider.TryGetContentType(filepath, out var contenttype))
@@ -185,8 +198,8 @@ namespace FileManage.Controllers
             byte[] bytes = await System.IO.File.ReadAllBytesAsync(filepath);
             FileContentResult result = File(bytes, contenttype, Path.GetFileName(filepath));
             System.IO.File.Delete(pdfFilepath);
-            System.IO.File.Delete(filepath);          
-           
+            System.IO.File.Delete(filepath);
+
             return result;
         }
         //https://products.aspose.com/words/net/conversion/pdf-to-image/ use this site for other formate conversion 
