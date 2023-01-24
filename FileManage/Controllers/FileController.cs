@@ -4,6 +4,8 @@ using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using FileManage.Interface;
+using IronPdf;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using System.Net.Mime;
@@ -227,6 +229,26 @@ namespace FileManage.Controllers
         public async Task<IActionResult> DeleteImageToCloudinary([FromQuery] string publicId)
         {
             return Ok(await _photoService.DeletePhotoAsync(publicId));
+        }
+
+        public class Pdf
+        {
+            public string Name { get; set; }
+            public string Title { get; set; }
+        }
+        [HttpPost("htmlToPdf")]
+        public async Task<IActionResult> HtmlToPdfConverter([FromBody] Pdf pdf)
+        {
+            var renderer = new HtmlToPdf();
+            //for saving  the pdf
+            //string pdfFilepath = Path.Combine(Directory.GetCurrentDirectory(), "Upload\\Temp\\PDF", pdf.Name);
+            //var data = renderer.RenderHtmlAsPdf($"<h1>{pdf.Title}</h1>").SaveAs($"{pdfFilepath}.pdf");
+            var data = renderer.RenderHtmlAsPdf($"<h1>{pdf.Title}</h1>");
+            var stream = new MemoryStream((int)data.Stream.Length);
+            data.Stream.CopyTo(stream);
+            var bytes = stream.ToArray();
+            FileContentResult result = File(bytes, "application/octet-stream", $"{pdf.Name}.pdf");
+            return result;
         }
     }
 }

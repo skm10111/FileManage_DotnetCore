@@ -10,12 +10,14 @@
     <PackageReference Include="Aspose.Words" Version="23.1.0" />
     <PackageReference Include="ClosedXML" Version="0.100.3" />
     <PackageReference Include="CloudinaryDotNet" Version="1.20.0" />
+    <PackageReference Include="IronPdf" Version="2023.1.11416" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.0" />
     <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Upload\Files\" />
     <Folder Include="wwwroot\" />
     <Folder Include="Upload\Temp\IMAGE\" />
     <Folder Include="Upload\Temp\WORD\" />
